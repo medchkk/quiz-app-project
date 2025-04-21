@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+/* Variables de couleurs */
+:root {
+  --bg-light: #FFF8E7; /* Beige clair */
+  --wave-cyan: #00C4E6; /* Cyan */
+  --wave-yellow: #FFD60A; /* Jaune */
+  --wave-pink: #FF69B4; /* Rose */
+  --text-dark-blue: #003087; /* Bleu foncé pour les titres */
+  --text-medium-blue: #00A3E0; /* Bleu moyen pour le texte secondaire */
+  --button-cyan: #00C4E6; /* Cyan pour les boutons principaux */
+  --button-dark-blue: #003087; /* Bleu foncé pour les boutons secondaires */
+  --button-medium-blue: #00A3E0; /* Bleu moyen pour les boutons de navigation */
+  --option-yellow: #FFD60A; /* Jaune pour les options de quiz */
+  --option-cyan: #00C4E6; /* Cyan pour les options de quiz */
+}
+
+/* Appliquer la police Poppins globalement */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-light);
+  margin: 0;
+  padding: 0;
+}
+
+/* Style pour les vagues décoratives */
+.wave-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.wave-container svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100px; /* Ajuste la hauteur des vagues */
+}
+
+/* Couleurs des vagues */
+.wave-cyan {
+  fill: var(--wave-cyan);
+}
+.wave-yellow {
+  fill: var(--wave-yellow);
+}
+.wave-pink {
+  fill: var(--wave-pink);
+}
+
+/* Style pour les titres */
+h2 {
+  color: var(--text-dark-blue);
+  font-weight: 700;
+}
+
+/* Style pour le texte secondaire */
+.text-secondary {
+  color: var(--text-medium-blue);
+  font-weight: 400;
+}
+
+/* Style pour les boutons */
+.button-primary {
+  background-color: var(--button-cyan);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.button-primary:hover {
+  background-color: #00A3E0; /* Légère variation au survol */
+}
+
+.button-secondary {
+  background-color: var(--button-dark-blue);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.button-secondary:hover {
+  background-color: #002060; /* Légère variation au survol */
+}
+
+.button-nav {
+  background-color: var(--button-medium-blue);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.button-nav:hover {
+  background-color: #0080B3; /* Légère variation au survol */
+}
+
+/* Style pour les options de quiz */
+.option-yellow {
+  background-color: var(--option-yellow);
+  color: var(--text-dark-blue);
+  border: 2px solid white;
+  border-radius: 15px;
+  padding: 20px;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+.option-yellow:hover {
+  transform: scale(1.05);
+}
+
+.option-cyan {
+  background-color: var(--option-cyan);
+  color: var(--text-dark-blue);
+  border: 2px solid white;
+  border-radius: 15px;
+  padding: 20px;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+.option-cyan:hover {
+  transform: scale(1.05);
+}
+
+/* Animation de chargement */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid var(--button-cyan);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+/* Animation fade-in pour les quiz */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  h2 {
+    font-size: 1.5rem;
+  }
+  .button-primary, .button-secondary {
+    padding: 10px 20px;
+  }
+  .option-yellow, .option-cyan {
+    padding: 15px;
+  }
+}
