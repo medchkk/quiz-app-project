@@ -20,6 +20,13 @@ const submissionSchema = new mongoose.Schema({
       selectedOption: {
         type: Number,
         required: true,
+        // -1 représente "pas de réponse"
+        validate: {
+          validator: function(v) {
+            return v >= -1; // Accepter -1 ou des valeurs positives
+          },
+          message: props => `${props.value} n'est pas une valeur valide pour selectedOption`
+        }
       },
     },
   ],

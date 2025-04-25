@@ -1,0 +1,148 @@
+/* Animations pour la page d'accueil */
+
+/* Animation du quiz */
+.quiz-animation {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.quiz-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.quiz-circle-1 {
+  width: 200px;
+  height: 200px;
+  background-color: var(--button-cyan);
+  animation-name: pulse-1;
+}
+
+.quiz-circle-2 {
+  width: 160px;
+  height: 160px;
+  background-color: var(--button-yellow);
+  top: 20px;
+  left: 20px;
+  animation-name: pulse-2;
+  animation-delay: 0.5s;
+}
+
+.quiz-circle-3 {
+  width: 120px;
+  height: 120px;
+  background-color: var(--button-pink);
+  top: 40px;
+  left: 40px;
+  animation-name: pulse-3;
+  animation-delay: 1s;
+}
+
+.quiz-question {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+@keyframes pulse-1 {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse-2 {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse-3 {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Animation de fondu pour les éléments */
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animation de rebond */
+.bounce {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+/* Animation de rotation */
+.rotate {
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Effets néon pour le logo QUIZ */
+.neon-text {
+  color: #00f7ff;
+  text-shadow:
+    0 0 5px rgba(0, 247, 255, 0.8),
+    0 0 10px rgba(0, 247, 255, 0.6),
+    0 0 15px rgba(0, 247, 255, 0.4),
+    0 0 20px rgba(0, 247, 255, 0.2);
+}
+
+.neon-orange {
+  color: #ffbb00;
+  text-shadow:
+    0 0 5px rgba(255, 187, 0, 0.8),
+    0 0 10px rgba(255, 187, 0, 0.6),
+    0 0 15px rgba(255, 187, 0, 0.4),
+    0 0 20px rgba(255, 187, 0, 0.2);
+}
+
+.neon-flicker {
+  animation: neonFlicker 3s infinite alternate;
+}
+
+@keyframes neonFlicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 0.95;
+  }
+  20%, 24%, 55% {
+    opacity: 0.7;
+  }
+}
+
+/* Animation pour l'ampoule */
+.bulb-glow {
+  animation: bulbGlow 2s infinite alternate;
+}
+
+@keyframes bulbGlow {
+  from {
+    filter: drop-shadow(0 0 5px rgba(255, 187, 0, 0.8));
+  }
+  to {
+    filter: drop-shadow(0 0 15px rgba(255, 187, 0, 1));
+  }
+}

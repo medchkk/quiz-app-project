@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaLock } from 'react-icons/fa'; // Icônes pour email et mot de passe
 import axios from 'axios';
+import ThemeToggle from '../components/ThemeToggle';
+
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -17,8 +19,49 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Étape 1: Connexion pour obtenir le token
       const response = await axios.post('http://localhost:5000/auth/login', formData);
-      localStorage.setItem('token', response.data.token);
+      const token = response.data.token;
+      localStorage.setItem('token', token);
+
+      // Étape 2: Récupérer les informations du profil utilisateur
+      try {
+        const userResponse = await axios.get('http://localhost:5000/users/profile', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        // Stocker les informations utilisateur dans le localStorage
+        const username = userResponse.data.username;
+        localStorage.setItem('username', username);
+        localStorage.setItem('email', userResponse.data.email);
+
+        // Créer une clé spécifique à l'utilisateur pour l'avatar
+        const userAvatarKey = `userAvatar_${username}`;
+        console.log(`Login: Using avatar key: ${userAvatarKey} for user: ${username}`);
+
+        // Stocker la clé de l'avatar actuel
+        localStorage.setItem('currentAvatarKey', userAvatarKey);
+
+        // Si l'utilisateur a un avatar dans la réponse API, le stocker
+        if (userResponse.data.avatar) {
+          console.log('Login: Using avatar from API response');
+          // Vérifier si l'avatar est une image base64 ou une URL
+          if (userResponse.data.avatar.startsWith('data:image/')) {
+            console.log('Login: Avatar is a base64 image');
+          } else {
+            console.log('Login: Avatar is a URL');
+          }
+          localStorage.setItem(userAvatarKey, userResponse.data.avatar);
+        }
+
+        console.log('Login: User profile data loaded successfully');
+      } catch (profileError) {
+        console.error('Error fetching user profile after login:', profileError);
+        // Continuer même en cas d'erreur pour ne pas bloquer la connexion
+      }
+
       setError('');
       navigate('/');
     } catch (err) {
@@ -31,7 +74,10 @@ function Login() {
   return (
     <div className="relative min-h-screen bg-[var(--bg-light)] p-6">
       <div className="max-w-md mx-auto pb-32"> {/* Padding-bottom pour les vagues */}
-        <div className="bg-white p-8 rounded-lg shadow-md">
+        <div className="flex justify-end mb-4">
+          <ThemeToggle />
+        </div>
+        <div className="bg-[var(--card-bg)] p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-center text-[var(--text-dark-blue)] mb-6">Connexion</h2>
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
           <form onSubmit={handleSubmit}>

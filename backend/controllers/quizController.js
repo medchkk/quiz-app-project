@@ -3,7 +3,7 @@ const Quiz = require('../models/Quiz');
 const Submission = require('../models/Submission');
 const User = require('../models/User');
 
-const getQuizzes = async (req, res) => {
+const getQuizzes = async (_req, res) => {
   try {
     console.log('Fetching all quizzes...');
     const quizzes = await Quiz.find({}, 'title category');
@@ -46,11 +46,16 @@ const submitQuiz = async (req, res) => {
 
     let score = 0;
     const submissionAnswers = answers.map((answer, index) => {
-      const isCorrect = quiz.questions[index].correctAnswer === answer;
+      // Gérer le cas où answer est null (pas de réponse sélectionnée)
+      const selectedOption = answer === null ? -1 : answer;
+
+      // Vérifier si la réponse est correcte (uniquement si une réponse a été sélectionnée)
+      const isCorrect = answer !== null && quiz.questions[index].correctAnswer === answer;
       if (isCorrect) score++;
+
       return {
         questionIndex: index,
-        selectedOption: answer,
+        selectedOption: selectedOption, // Utiliser -1 pour représenter "pas de réponse"
       };
     });
 
@@ -90,7 +95,8 @@ const getSubmissionDetails = async (req, res) => {
       const question = quiz.questions[answer.questionIndex];
       return {
         question: question.text,
-        selectedAnswer: question.options[answer.selectedOption],
+        // Gérer le cas où aucune réponse n'a été sélectionnée
+        selectedAnswer: answer.selectedOption === -1 ? "Pas de réponse" : question.options[answer.selectedOption],
         correctAnswer: question.options[question.correctAnswer],
         isCorrect: answer.selectedOption === question.correctAnswer,
       };

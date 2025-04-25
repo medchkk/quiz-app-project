@@ -2,6 +2,7 @@
 
 /* Variables de couleurs */
 :root {
+  /* Light theme (default) */
   --bg-light: #FFF8E7; /* Beige clair */
   --wave-cyan: #00C4E6; /* Cyan */
   --wave-yellow: #FFD60A; /* Jaune */
@@ -13,14 +14,37 @@
   --button-medium-blue: #00A3E0; /* Bleu moyen pour les boutons de navigation */
   --option-yellow: #FFD60A; /* Jaune pour les options de quiz */
   --option-cyan: #00C4E6; /* Cyan pour les options de quiz */
+  --text-color: #333333; /* Couleur de texte standard */
+  --card-bg: #FFFFFF; /* Fond des cartes */
+  --border-color: #EEEEEE; /* Couleur des bordures */
+}
+
+/* Dark theme */
+.dark-theme {
+  --bg-light: #121212; /* Fond sombre */
+  --wave-cyan: #0097B2; /* Cyan plus foncé */
+  --wave-yellow: #D4AF00; /* Jaune plus foncé */
+  --wave-pink: #C74B8E; /* Rose plus foncé */
+  --text-dark-blue: #4D9BFF; /* Bleu plus clair pour les titres */
+  --text-medium-blue: #64C7FF; /* Bleu plus clair pour le texte secondaire */
+  --button-cyan: #0097B2; /* Cyan plus foncé pour les boutons principaux */
+  --button-dark-blue: #4D9BFF; /* Bleu plus clair pour les boutons secondaires */
+  --button-medium-blue: #64C7FF; /* Bleu plus clair pour les boutons de navigation */
+  --option-yellow: #D4AF00; /* Jaune plus foncé pour les options de quiz */
+  --option-cyan: #0097B2; /* Cyan plus foncé pour les options de quiz */
+  --text-color: #E0E0E0; /* Couleur de texte claire */
+  --card-bg: #1E1E1E; /* Fond des cartes sombre */
+  --border-color: #333333; /* Couleur des bordures sombre */
 }
 
 /* Appliquer la police Poppins globalement */
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: var(--bg-light);
+  background: linear-gradient(to bottom, #001440 0%, #001e60 15%, var(--bg-light) 40%);
+  color: var(--text-color);
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Style pour les vagues décoratives */
@@ -104,11 +128,11 @@ h2 {
 .option-yellow {
   background-color: var(--option-yellow);
   color: var(--text-dark-blue);
-  border: 2px solid white;
+  border: 2px solid var(--border-color);
   border-radius: 15px;
   padding: 20px;
   font-weight: 600;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 .option-yellow:hover {
   transform: scale(1.05);
@@ -117,11 +141,11 @@ h2 {
 .option-cyan {
   background-color: var(--option-cyan);
   color: var(--text-dark-blue);
-  border: 2px solid white;
+  border: 2px solid var(--border-color);
   border-radius: 15px;
   padding: 20px;
   font-weight: 600;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 .option-cyan:hover {
   transform: scale(1.05);

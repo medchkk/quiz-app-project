@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaLock, FaCheckCircle } from 'react-icons/fa'; // Icônes pour les champs et le message de succès
 import axios from 'axios';
+import ThemeToggle from '../components/ThemeToggle';
+
 
 function Register() {
   const [formData, setFormData] = useState({ email: '', password: '', username: '' });
@@ -18,10 +20,72 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Étape 1: Inscription
       await axios.post('http://localhost:5000/auth/register', formData);
-      setSuccess('Inscription réussie ! Redirection vers la connexion...');
+      setSuccess('Inscription réussie ! Connexion automatique...');
       setError('');
-      setTimeout(() => navigate('/login'), 2000);
+
+      // Étape 2: Connexion automatique
+      try {
+        const loginResponse = await axios.post('http://localhost:5000/auth/login', {
+          email: formData.email,
+          password: formData.password
+        });
+
+        const token = loginResponse.data.token;
+        localStorage.setItem('token', token);
+
+        // Étape 3: Récupérer les informations du profil utilisateur
+        try {
+          const userResponse = await axios.get('http://localhost:5000/users/profile', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+
+          // Stocker les informations utilisateur dans le localStorage
+          const username = userResponse.data.username;
+          localStorage.setItem('username', username);
+          localStorage.setItem('email', userResponse.data.email);
+
+          // Créer une clé spécifique à l'utilisateur pour l'avatar
+          const userAvatarKey = `userAvatar_${username}`;
+          console.log(`Register: Using avatar key: ${userAvatarKey} for user: ${username}`);
+
+          // Stocker la clé de l'avatar actuel
+          localStorage.setItem('currentAvatarKey', userAvatarKey);
+
+          // Si l'utilisateur a un avatar dans la réponse API, le stocker
+          if (userResponse.data.avatar) {
+            console.log('Register: Using avatar from API response');
+            // Vérifier si l'avatar est une image base64 ou une URL
+            if (userResponse.data.avatar.startsWith('data:image/')) {
+              console.log('Register: Avatar is a base64 image');
+            } else {
+              console.log('Register: Avatar is a URL');
+            }
+            localStorage.setItem(userAvatarKey, userResponse.data.avatar);
+          }
+
+          console.log('Register: User profile data loaded successfully');
+
+          // Rediriger vers la page d'accueil
+          setTimeout(() => navigate('/'), 1000);
+          return;
+        } catch (profileError) {
+          console.error('Error fetching user profile after registration:', profileError);
+          // Continuer même en cas d'erreur
+        }
+
+        // Si on arrive ici, c'est que la récupération du profil a échoué
+        // mais on a quand même le token, donc on redirige vers la page d'accueil
+        setTimeout(() => navigate('/'), 1000);
+        return;
+      } catch (loginError) {
+        console.error('Error logging in after registration:', loginError);
+        // En cas d'erreur de connexion, rediriger vers la page de connexion
+        setTimeout(() => navigate('/login'), 2000);
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Erreur lors de l\'inscription');
       setSuccess('');
@@ -33,7 +97,10 @@ function Register() {
   return (
     <div className="relative min-h-screen bg-[var(--bg-light)] p-6">
       <div className="max-w-md mx-auto pb-32"> {/* Padding-bottom pour les vagues */}
-        <div className="bg-white p-8 rounded-lg shadow-md">
+        <div className="flex justify-end mb-4">
+          <ThemeToggle />
+        </div>
+        <div className="bg-[var(--card-bg)] p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-center text-[var(--text-dark-blue)] mb-6">Inscription</h2>
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
           {success && (

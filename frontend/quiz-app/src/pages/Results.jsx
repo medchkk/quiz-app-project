@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaTrophy } from 'react-icons/fa'; // Icône de trophée
 import api from '../utils/api';
+import ThemeToggle from '../components/ThemeToggle';
+
 
 const Results = () => {
   const { submissionId } = useParams();
@@ -40,6 +42,9 @@ const Results = () => {
     return (
       <div className="relative min-h-screen bg-[var(--bg-light)] p-6">
         <div className="max-w-2xl mx-auto text-center">
+          <div className="flex justify-end mb-4">
+            <ThemeToggle />
+          </div>
           <h2 className="text-2xl font-bold mb-6 text-[var(--text-dark-blue)]">Résultat de la soumission</h2>
           <p className="text-red-500 mb-4">{error}</p>
           <button
@@ -57,6 +62,9 @@ const Results = () => {
     return (
       <div className="relative min-h-screen bg-[var(--bg-light)] p-6">
         <div className="max-w-2xl mx-auto text-center">
+          <div className="flex justify-end mb-4">
+            <ThemeToggle />
+          </div>
           <h2 className="text-2xl font-bold mb-6 text-[var(--text-dark-blue)]">Résultat de la soumission</h2>
           <div className="spinner" />
         </div>
@@ -67,6 +75,10 @@ const Results = () => {
   return (
     <div className="relative min-h-screen bg-[var(--bg-light)] p-6">
       <div className="max-w-2xl mx-auto text-center pb-32"> {/* Padding-bottom pour les vagues */}
+        {/* Barre de navigation */}
+        <div className="flex justify-end mb-4">
+          <ThemeToggle />
+        </div>
         {/* Icône de trophée */}
         <FaTrophy className="text-[var(--option-yellow)] text-6xl mx-auto mb-4" />
         <h2 className="text-3xl font-bold mb-2 text-[var(--text-dark-blue)]">Congratulations</h2>
@@ -81,7 +93,7 @@ const Results = () => {
         {/* Détails des réponses */}
         {submission.results && submission.results.length > 0 ? (
           submission.results.map((result, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-md mb-4">
+            <div key={index} className="bg-[var(--card-bg)] p-4 rounded-lg shadow-md mb-4">
               <p className="text-lg font-semibold text-[var(--text-dark-blue)]">{result.question}</p>
               <p className="text-gray-600">Votre réponse : {result.selectedAnswer}</p>
               <p className="text-gray-600">Réponse correcte : {result.correctAnswer}</p>

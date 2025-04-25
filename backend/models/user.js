@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  avatar: {
+    type: String,
+    default: null
+  },
   stats: {
     totalScore: {
       type: Number,
@@ -22,9 +26,11 @@ const userSchema = new mongoose.Schema({
     },
     totalQuizzesCompleted: {
       type: Number,
-      default: 0 },
+      default: 0
+    },
   },
-});
+}, { timestamps: true });
+
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 module.exports = User;
