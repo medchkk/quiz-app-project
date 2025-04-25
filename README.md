@@ -184,12 +184,6 @@ quiz-app-project/
 - **Mode hors ligne** : Certaines fonctionnalités sont disponibles sans connexion internet
 - **Animations** : Transitions fluides entre les pages et les questions
 
-## ⚠️ Problèmes connus
-
-- L'application peut être lente à charger sur certains appareils mobiles
-- Les avatars peuvent ne pas s'afficher correctement après la déconnexion
-- Certains navigateurs anciens peuvent rencontrer des problèmes d'affichage
-
 ## 🔮 Roadmap
 
 - [ ] Ajout de nouvelles catégories de quiz
