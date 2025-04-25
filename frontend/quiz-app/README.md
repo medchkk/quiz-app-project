@@ -1,12 +1,77 @@
-# React + Vite
+# Quiz App - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface utilisateur de l'application Quiz App, développée avec React et Vite.
 
-Currently, two official plugins are available:
+![Quiz App Screenshot](../public/app-screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌟 Fonctionnalités
 
-## Expanding the ESLint configuration
+- **Interface utilisateur intuitive** : Navigation fluide et design responsive
+- **Thème sombre/clair** : Personnalisation de l'apparence
+- **Quiz interactifs** : Questions à choix multiples avec minuteur
+- **Profil utilisateur** : Gestion des informations et photo de profil
+- **Statistiques** : Visualisation des performances
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Démarrage rapide
+
+### Prérequis
+
+- Node.js (v14+)
+- npm ou yarn
+
+### Installation
+
+```bash
+# Installer les dépendances
+npm install
+
+# Démarrer le serveur de développement
+npm run dev
+```
+
+L'application sera accessible à l'adresse : http://localhost:5173
+
+### Build pour la production
+
+```bash
+npm run build
+```
+
+Les fichiers de production seront générés dans le dossier `dist`.
+
+## 📁 Structure du projet
+
+```
+src/
+├── assets/        # Images, icônes et autres ressources
+├── components/    # Composants React réutilisables
+├── contexts/      # Contextes React (thème, auth, etc.)
+├── hooks/         # Hooks personnalisés
+├── pages/         # Composants de page
+├── utils/         # Fonctions utilitaires
+├── App.jsx        # Composant principal
+└── main.jsx       # Point d'entrée
+```
+
+## 🔧 Technologies utilisées
+
+- **React** : Bibliothèque UI
+- **Vite** : Build tool et serveur de développement
+- **React Router** : Navigation entre les pages
+- **TailwindCSS** : Framework CSS utilitaire
+- **React Icons** : Bibliothèque d'icônes
+
+## 🔄 Communication avec le backend
+
+L'application communique avec le backend via une API RESTful. Les requêtes sont gérées par le module `api.js` dans le dossier `utils`.
+
+## 🧪 Tests
+
+```bash
+# Exécuter les tests
+npm test
+```
+
+## 📝 Licence
+
+Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
