@@ -1,0 +1,13 @@
+[
+  {
+    "_id": "user1",
+    "email": "user@example.com",
+    "password": "$2b$10$X/4xyJz3ZfaZ1gW9LN.K7.HpzW5oGcKbw1.8zyQRjKVjJ5fEgyujS",
+    "username": "TestUser",
+    "avatar": null,
+    "stats": {
+      "totalScore": 0,
+      "totalQuizzesCompleted": 0
+    }
+  }
+]

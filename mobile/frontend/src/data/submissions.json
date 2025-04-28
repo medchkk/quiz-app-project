@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "submission1",
+    "userId": "user1",
+    "quizId": "quiz1",
+    "answers": [
+      {
+        "questionIndex": 0,
+        "selectedOption": 1
+      },
+      {
+        "questionIndex": 1,
+        "selectedOption": 0
+      }
+    ],
+    "score": 2,
+    "submittedAt": "2023-04-25T12:00:00.000Z"
+  }
+]

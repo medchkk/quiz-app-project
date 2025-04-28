@@ -1,0 +1,70 @@
+[
+  {
+    "_id": "quiz1",
+    "title": "Histoire de France",
+    "category": "Histoire",
+    "questions": [
+      {
+        "text": "Qui a remporté la bataille de Waterloo ?",
+        "options": ["Napoléon", "Wellington", "Louis XIV", "Jeanne d'Arc"],
+        "correctAnswer": 1
+      },
+      {
+        "text": "En quelle année a eu lieu la Révolution française ?",
+        "options": ["1789", "1804", "1756", "1815"],
+        "correctAnswer": 0
+      }
+    ]
+  },
+  {
+    "_id": "quiz2",
+    "title": "Sciences de base",
+    "category": "Sciences",
+    "questions": [
+      {
+        "text": "Quelle est la formule de l'eau ?",
+        "options": ["H2O", "CO2", "O2", "H2SO4"],
+        "correctAnswer": 0
+      },
+      {
+        "text": "Quel est le plus grand organe du corps humain ?",
+        "options": ["Cerveau", "Foie", "Peau", "Cœur"],
+        "correctAnswer": 2
+      }
+    ]
+  },
+  {
+    "_id": "quiz3",
+    "title": "Géographie mondiale",
+    "category": "Géographie",
+    "questions": [
+      {
+        "text": "Quelle est la capitale de l'Australie ?",
+        "options": ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+        "correctAnswer": 2
+      },
+      {
+        "text": "Quel est le plus grand océan du monde ?",
+        "options": ["Atlantique", "Indien", "Arctique", "Pacifique"],
+        "correctAnswer": 3
+      }
+    ]
+  },
+  {
+    "_id": "quiz4",
+    "title": "Culture générale",
+    "category": "Culture",
+    "questions": [
+      {
+        "text": "Qui a peint La Joconde ?",
+        "options": ["Van Gogh", "Picasso", "Michel-Ange", "Léonard de Vinci"],
+        "correctAnswer": 3
+      },
+      {
+        "text": "Quel est le plus grand pays du monde en superficie ?",
+        "options": ["États-Unis", "Chine", "Canada", "Russie"],
+        "correctAnswer": 3
+      }
+    ]
+  }
+]

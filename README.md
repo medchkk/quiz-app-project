@@ -34,19 +34,15 @@ Application de quiz interactive avec authentification utilisateur, suivi des sta
 
 ## 🏗️ Architecture
 
-Le projet est divisé en deux parties principales qui communiquent via une API RESTful :
+Le projet est organisé en deux parties principales :
 
-- **Frontend** : Application React avec Vite, TailwindCSS et React Router
-  - Interface utilisateur intuitive et responsive
-  - Gestion d'état avec Context API
-  - Routing avec React Router
-  - Styling avec TailwindCSS
+- **web/** : Application web complète
+  - **frontend/** : Interface utilisateur React avec Vite, TailwindCSS et React Router
+  - **backend/** : API RESTful avec Node.js, Express et MongoDB
 
-- **Backend** : API RESTful avec Node.js, Express et MongoDB
-  - Architecture MVC (Modèle-Vue-Contrôleur)
-  - Base de données MongoDB avec Mongoose
-  - Authentification avec JWT
-  - Gestion des uploads avec Multer
+- **mobile/** : Application mobile Android
+  - **frontend/** : Application React avec Capacitor et fonctionnalités hors-ligne
+  - **data/** : Données JSON pour le mode hors-ligne
 
 ## � Captures d'écran
 
@@ -75,10 +71,12 @@ git clone https://github.com/votre-username/quiz-app-project.git
 cd quiz-app-project
 ```
 
-### Configuration du Backend
+### Configuration de l'application web
+
+#### Backend
 
 ```bash
-cd backend
+cd web/backend
 npm install
 
 # Créer un fichier .env dans le dossier backend
@@ -97,17 +95,34 @@ PORT=5000
 FRONTEND_URL=http://localhost:5173
 ```
 
-### Configuration du Frontend
+#### Frontend
 
 ```bash
-cd frontend/quiz-app
+cd web/frontend
 npm install
 
 # Démarrer le serveur de développement
 npm run dev
 
 # Pour construire pour la production
-# npm run build
+npm run build
+```
+
+### Configuration de l'application mobile
+
+```bash
+cd mobile/frontend
+npm install
+
+# Démarrer le serveur de développement
+npm run dev
+
+# Pour construire l'application
+npm run build
+npx cap sync android
+
+# Pour ouvrir dans Android Studio
+npx cap open android
 ```
 
 L'application frontend sera accessible à l'adresse : http://localhost:5173
@@ -117,32 +132,41 @@ L'API backend sera accessible à l'adresse : http://localhost:5000
 
 ```
 quiz-app-project/
-├── backend/                # API Node.js/Express
-│   ├── controllers/        # Logique métier
-│   ├── middleware/         # Middleware Express
-│   ├── models/             # Modèles Mongoose
-│   ├── routes/             # Routes API
-│   ├── uploads/            # Fichiers uploadés
-│   ├── utils/              # Fonctions utilitaires
-│   ├── .env                # Variables d'environnement
-│   ├── package.json        # Dépendances backend
-│   ├── README.md           # Documentation backend
-│   └── server.js           # Point d'entrée
-│
-├── frontend/               # Application React
-│   └── quiz-app/
+├── web/                    # Application web
+│   ├── backend/            # API Node.js/Express
+│   │   ├── controllers/    # Logique métier
+│   │   ├── middleware/     # Middleware Express
+│   │   ├── models/         # Modèles Mongoose
+│   │   ├── routes/         # Routes API
+│   │   ├── uploads/        # Fichiers uploadés
+│   │   ├── utils/          # Fonctions utilitaires
+│   │   ├── .env            # Variables d'environnement
+│   │   ├── package.json    # Dépendances backend
+│   │   ├── README.md       # Documentation backend
+│   │   └── server.js       # Point d'entrée
+│   │
+│   └── frontend/           # Frontend React
 │       ├── public/         # Fichiers statiques
 │       ├── src/            # Code source
 │       │   ├── assets/     # Images et ressources
 │       │   ├── components/ # Composants React
 │       │   ├── contexts/   # Contextes React
-│       │   ├── hooks/      # Hooks personnalisés
 │       │   ├── pages/      # Composants de page
 │       │   ├── utils/      # Fonctions utilitaires
 │       │   ├── App.jsx     # Composant principal
 │       │   └── main.jsx    # Point d'entrée
 │       ├── package.json    # Dépendances frontend
 │       └── README.md       # Documentation frontend
+│
+├── mobile/                 # Application mobile
+│   ├── frontend/           # Frontend React avec Capacitor
+│   │   ├── android/        # Projet Android généré
+│   │   ├── public/         # Fichiers statiques
+│   │   ├── src/            # Code source
+│   │   ├── capacitor.config.json # Configuration Capacitor
+│   │   └── package.json    # Dépendances mobile
+│   │
+│   └── data/               # Données JSON pour le mode hors-ligne
 │
 ├── .gitignore              # Fichiers ignorés par Git
 └── README.md               # Documentation principale
