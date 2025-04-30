@@ -2,29 +2,27 @@ const mongoose = require('mongoose');
 const Quiz = require('../models/Quiz');
 const Submission = require('../models/Submission');
 const User = require('../models/User');
+const logger = require('../utils/logger');
 
 const getQuizzes = async (_req, res) => {
   try {
-    console.log('Fetching all quizzes...');
-    // Récupérer tous les quiz avec leurs questions
-    const quizzes = await Quiz.find({});
+    logger.debug('Quiz', 'Fetching all quizzes');
 
-    // Transformer les données pour n'inclure que les champs nécessaires
-    const transformedQuizzes = quizzes.map(quiz => ({
-      _id: quiz._id,
-      title: quiz.title,
-      category: quiz.category,
-      difficulty: quiz.difficulty,
-      description: quiz.description,
-      imageUrl: quiz.imageUrl,
-      isPublished: quiz.isPublished,
-      questions: quiz.questions // Inclure les questions complètes
-    }));
+    // Optimisation : Sélectionner uniquement les champs nécessaires directement dans la requête
+    const quizzes = await Quiz.find({}, {
+      title: 1,
+      category: 1,
+      difficulty: 1,
+      description: 1,
+      imageUrl: 1,
+      isPublished: 1,
+      questions: 1
+    });
 
-    console.log('Quizzes found:', transformedQuizzes.length);
-    res.json(transformedQuizzes);
+    logger.debug('Quiz', `Quizzes found: ${quizzes.length}`);
+    res.json(quizzes);
   } catch (error) {
-    console.error('Error in getQuizzes:', error);
+    logger.error('Quiz', 'Error in getQuizzes', error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
@@ -33,27 +31,27 @@ const getQuizById = async (req, res) => {
   try {
     // Utilisation du paramètre standardisé quizId
     const quizId = req.params.quizId;
-    console.log('Fetching quiz with ID:', quizId);
-    console.log('Database in use:', mongoose.connection.db.databaseName);
+    logger.debug('Quiz', `Fetching quiz with ID: ${quizId}`);
+    logger.debug('Quiz', `Database in use: ${mongoose.connection.db.databaseName}`);
 
     // Recherche avec findById
     const quiz = await Quiz.findById(quizId);
 
     if (!quiz) {
-      console.log('Quiz not found for ID:', quizId);
+      logger.warn('Quiz', `Quiz not found for ID: ${quizId}`);
       // Vérifier si des quiz existent dans la base
       const quizCount = await Quiz.countDocuments();
-      console.log('Number of quizzes in database:', quizCount);
+      logger.debug('Quiz', `Number of quizzes in database: ${quizCount}`);
       return res.status(404).json({
         message: 'Quiz not found',
         error: `No quiz found with ID: ${quizId}`
       });
     }
 
-    console.log('Quiz found:', quiz.title);
+    logger.debug('Quiz', `Quiz found: ${quiz.title}`);
     res.json(quiz);
   } catch (error) {
-    console.error('Error in getQuizById:', error);
+    logger.error('Quiz', 'Error in getQuizById', error);
 
     // Amélioration de la gestion des erreurs
     if (error.name === 'CastError') {
@@ -136,7 +134,7 @@ const submitQuiz = async (req, res) => {
       message: 'Quiz submitted successfully'
     });
   } catch (error) {
-    console.error('Error in submitQuiz:', error);
+    logger.error('Quiz', 'Error in submitQuiz', error);
 
     // Amélioration de la gestion des erreurs
     if (error.name === 'CastError') {
@@ -156,7 +154,7 @@ const submitQuiz = async (req, res) => {
 const getSubmissionDetails = async (req, res) => {
   try {
     const submissionId = req.params.submissionId;
-    console.log('Fetching submission details for ID:', submissionId);
+    logger.debug('Quiz', `Fetching submission details for ID: ${submissionId}`);
 
     const submission = await Submission.findById(submissionId);
     if (!submission) {
@@ -201,7 +199,7 @@ const getSubmissionDetails = async (req, res) => {
       message: 'Submission details retrieved successfully'
     });
   } catch (error) {
-    console.error('Error in getSubmissionDetails:', error);
+    logger.error('Quiz', 'Error in getSubmissionDetails', error);
 
     // Amélioration de la gestion des erreurs
     if (error.name === 'CastError') {

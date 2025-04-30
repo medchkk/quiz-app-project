@@ -17,6 +17,7 @@ import ImportExport from './pages/admin/ImportExport';
 import AdminRoute from './components/AdminRoute';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { cleanLocalStorage } from './utils/cleanLocalStorage';
+import { logInfo, logDebug } from './utils/logger';
 import './styles/admin.css';
 
 /**
@@ -30,11 +31,11 @@ function App() {
 
     // Vérifier si l'application a déjà été initialisée
     if (localStorage.getItem(INIT_KEY)) {
-      console.log('App already initialized, skipping initialization');
+      logDebug('App', 'App already initialized, skipping initialization');
       return;
     }
 
-    console.log('App started - performing one-time initialization');
+    logInfo('App', 'App started - performing one-time initialization');
 
     // Nettoyer le localStorage
     cleanLocalStorage();

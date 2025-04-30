@@ -4,6 +4,7 @@ import {
   getUserAvatar,
   saveUserAvatar
 } from './avatarUtils';
+import { logError, logDebug, logWarn } from './logger';
 
 // Configuration de l'API
 const API_URL = 'http://localhost:5000';
@@ -30,17 +31,17 @@ api.interceptors.response.use(
   async (error) => {
     // Vérifier si l'erreur a une réponse
     if (!error.response) {
-      console.error('Network error or server not responding:', error.message);
+      logError('API', `Network error or server not responding: ${error.message}`);
       return Promise.reject(error);
     }
 
     try {
       const { config, response: { status, data } } = error;
-      console.log(`API Error: ${status} for ${config.method.toUpperCase()} ${config.url}`, data);
+      logWarn('API', `API Error: ${status} for ${config.method.toUpperCase()} ${config.url}`, data);
 
       // Simuler l'endpoint GET /users/profile
       if (config.url === '/users/profile' && config.method === 'get' && (status === 404 || status === 500)) {
-        console.log('Simulating GET /users/profile response');
+        logDebug('API', 'Simulating GET /users/profile response');
 
         // Récupérer les informations utilisateur
         const token = localStorage.getItem('token');
@@ -57,7 +58,7 @@ api.interceptors.response.use(
             if (payload.email) email = payload.email;
           }
         } catch (e) {
-          console.error('Error decoding token:', e);
+          logError('API', 'Error decoding token', e);
         }
 
         // Récupérer l'avatar
@@ -86,7 +87,7 @@ api.interceptors.response.use(
 
       // Simuler l'endpoint PUT /users/profile
       if (config.url === '/users/profile' && config.method === 'put' && (status === 404 || status === 500)) {
-        console.log('Simulating PUT /users/profile response');
+        logDebug('API', 'Simulating PUT /users/profile response');
 
         let username = 'Utilisateur';
         let avatarUrl = null;
@@ -98,7 +99,7 @@ api.interceptors.response.use(
           // Simuler une URL d'avatar si un fichier est présent
           const avatarFile = config.data.get('avatar');
           if (avatarFile) {
-            console.log('Avatar upload detected:', avatarFile.name);
+            logDebug('API', `Avatar upload detected: ${avatarFile.name}`);
             avatarUrl = generateLetterAvatar(username);
             saveUserAvatar(username, avatarUrl);
           }
@@ -108,7 +109,7 @@ api.interceptors.response.use(
             const jsonData = typeof config.data === 'string' ? JSON.parse(config.data) : config.data;
             username = jsonData.username || username;
           } catch (e) {
-            console.error('Error parsing JSON data:', e);
+            logError('API', 'Error parsing JSON data', e);
           }
         }
 
@@ -144,14 +145,14 @@ api.interceptors.response.use(
       }
 
     } catch (interceptorError) {
-      console.error('Error in interceptor:', interceptorError);
+      logError('API', 'Error in interceptor', interceptorError);
 
       // Simuler une réponse de base pour les endpoints critiques
       if (error.config) {
         const { url, method } = error.config;
 
         if (url === '/users/profile' && (method === 'get' || method === 'put')) {
-          console.log('Providing fallback response for', method, url);
+          logDebug('API', `Providing fallback response for ${method} ${url}`);
 
           if (method === 'get') {
             // Récupérer les informations depuis le localStorage

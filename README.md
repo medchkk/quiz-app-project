@@ -2,7 +2,7 @@
 
 Application de quiz interactive avec authentification utilisateur, suivi des statistiques et gestion des profils. Cette application permet aux utilisateurs de tester leurs connaissances dans différentes catégories, de suivre leurs progrès et de personnaliser leur expérience.
 
-![Quiz App Logo](frontend/quiz-app/public/quiz-logo.png)
+![Quiz App Logo](web/frontend/public/logo.svg)
 
 ## 📑 Table des matières
 
@@ -46,14 +46,7 @@ Le projet est organisé en deux parties principales :
 
 ## 📸 Captures d'écran
 
-### Page d'accueil
-![Page d'accueil](frontend/quiz-app/public/screenshots/home.png)
-
-### Quiz en cours
-![Quiz en cours](frontend/quiz-app/public/screenshots/quiz.png)
-
-### Profil utilisateur
-![Profil utilisateur](frontend/quiz-app/public/screenshots/profile.png)
+*Les captures d'écran seront ajoutées prochainement*
 
 ## 📋 Prérequis
 
@@ -84,6 +77,15 @@ npm install
 
 # Démarrer le serveur
 npm start
+
+# Pour le développement avec redémarrage automatique
+npm run dev
+
+# Pour initialiser la base de données avec des données de test
+npm run seed
+
+# Pour créer un compte administrateur
+npm run create-admin
 ```
 
 Exemple de fichier `.env` pour le backend :
@@ -106,6 +108,12 @@ npm run dev
 
 # Pour construire pour la production
 npm run build
+
+# Pour prévisualiser la version de production
+npm run preview
+
+# Pour analyser la taille des bundles
+npm run analyze
 ```
 
 ### Configuration de l'application mobile
@@ -214,7 +222,10 @@ quiz-app-project/
 - [ ] Implémentation d'un mode multijoueur
 - [ ] Création d'un tableau de classement global
 - [ ] Possibilité de créer ses propres quiz
-- [ ] Application mobile native avec React Native
+- [ ] Amélioration des performances et optimisations
+- [ ] Tests unitaires et d'intégration
+- [ ] Documentation API complète
+- [ ] Internationalisation (i18n) pour supporter plusieurs langues
 
 ## 📝 Licence
 

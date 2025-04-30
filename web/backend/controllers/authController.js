@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const logger = require('../utils/logger');
 
 const register = async (req, res) => {
   const { email, password, username } = req.body;
@@ -45,7 +46,7 @@ const login = async (req, res) => {
       role: user.role || 'user' // Inclure le rôle dans le token
     };
 
-    console.log('Creating JWT token with payload:', tokenPayload);
+    logger.debug('Auth', 'Creating JWT token with payload', tokenPayload);
 
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
       expiresIn: '1h',
@@ -60,7 +61,7 @@ const login = async (req, res) => {
       avatar: user.avatar
     };
 
-    console.log('Sending user info in response:', userInfo);
+    logger.debug('Auth', 'Sending user info in response', userInfo);
 
     // Renvoyer le token et les informations de base de l'utilisateur
     res.json({

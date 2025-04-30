@@ -2,6 +2,7 @@
  * Utilitaire pour nettoyer le localStorage de manière sélective
  * Ne supprime que les clés temporaires et préserve les données importantes
  */
+import { logDebug, logError } from './logger';
 
 // Liste des clés à conserver absolument
 const KEYS_TO_KEEP = [
@@ -31,7 +32,7 @@ const GENERIC_AVATAR_KEY = 'userAvatar';
  */
 export const cleanLocalStorage = () => {
   try {
-    console.log('Selective localStorage cleaning started');
+    logDebug('Storage', 'Selective localStorage cleaning started');
 
     // Parcourir toutes les clés du localStorage
     for (let i = 0; i < localStorage.length; i++) {
@@ -42,25 +43,25 @@ export const cleanLocalStorage = () => {
 
       // Ne jamais supprimer les clés importantes ou les avatars spécifiques à l'utilisateur
       if (KEYS_TO_KEEP.includes(key) || key.startsWith(AVATAR_KEY_PREFIX)) {
-        console.log(`Keeping important key: ${key}`);
+        logDebug('Storage', `Keeping important key: ${key}`);
         continue;
       }
 
       // Supprimer uniquement les clés temporaires
       if (key.startsWith(TEMP_KEY_PREFIX)) {
-        console.log(`Removing temporary key: ${key}`);
+        logDebug('Storage', `Removing temporary key: ${key}`);
         localStorage.removeItem(key);
       }
     }
 
     // Supprimer l'ancienne clé générique userAvatar si elle existe
     if (localStorage.getItem(GENERIC_AVATAR_KEY)) {
-      console.log('Removing generic userAvatar key');
+      logDebug('Storage', 'Removing generic userAvatar key');
       localStorage.removeItem(GENERIC_AVATAR_KEY);
     }
 
-    console.log('Selective localStorage cleaning completed');
+    logDebug('Storage', 'Selective localStorage cleaning completed');
   } catch (error) {
-    console.error('Error during selective localStorage cleaning:', error);
+    logError('Storage', 'Error during selective localStorage cleaning', error);
   }
 };

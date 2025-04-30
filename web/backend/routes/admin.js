@@ -6,29 +6,47 @@ const adminAuthMiddleware = require('../middleware/adminAuth');
 const Quiz = require('../models/Quiz');
 const User = require('../models/User');
 const Submission = require('../models/Submission');
+const logger = require('../utils/logger');
 
 /**
  * Route pour récupérer des statistiques générales
  */
-router.get('/stats', adminAuthMiddleware, async (req, res) => {
+router.get('/stats', adminAuthMiddleware, async (_req, res) => {
   try {
-    const userCount = await User.countDocuments();
-    const quizCount = await Quiz.countDocuments();
-    const submissionCount = await Submission.countDocuments();
+    logger.debug('Admin', 'Fetching admin statistics');
 
-    // Calculer le score moyen des soumissions
-    const submissions = await Submission.find();
-    const totalScore = submissions.reduce((sum, submission) => sum + submission.score, 0);
-    const averageScore = submissions.length > 0 ? totalScore / submissions.length : 0;
+    // Optimisation : Utiliser des promesses parallèles pour les requêtes indépendantes
+    const [userCount, quizCount, submissionCount] = await Promise.all([
+      User.countDocuments(),
+      Quiz.countDocuments(),
+      Submission.countDocuments()
+    ]);
+
+    // Optimisation : Utiliser l'agrégation MongoDB pour calculer la moyenne directement
+    const aggregationResult = await Submission.aggregate([
+      {
+        $group: {
+          _id: null,
+          averageScore: { $avg: "$score" }
+        }
+      }
+    ]);
+
+    // Extraire le score moyen ou utiliser 0 si aucune soumission
+    const averageScore = aggregationResult.length > 0
+      ? Math.round(aggregationResult[0].averageScore * 100) / 100
+      : 0;
+
+    logger.debug('Admin', 'Admin statistics fetched successfully');
 
     res.json({
       userCount,
       quizCount,
       submissionCount,
-      averageScore: Math.round(averageScore * 100) / 100
+      averageScore
     });
   } catch (error) {
-    console.error('Error fetching admin stats:', error);
+    logger.error('Admin', 'Error fetching admin stats', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -36,12 +54,14 @@ router.get('/stats', adminAuthMiddleware, async (req, res) => {
 /**
  * Route pour récupérer tous les utilisateurs
  */
-router.get('/users', adminAuthMiddleware, async (req, res) => {
+router.get('/users', adminAuthMiddleware, async (_req, res) => {
   try {
+    logger.debug('Admin', 'Fetching all users');
     const users = await User.find().select('-password');
+    logger.debug('Admin', `Found ${users.length} users`);
     res.json(users);
   } catch (error) {
-    console.error('Error fetching users:', error);
+    logger.error('Admin', 'Error fetching users', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -52,24 +72,30 @@ router.get('/users', adminAuthMiddleware, async (req, res) => {
 router.put('/users/:userId/role', adminAuthMiddleware, async (req, res) => {
   try {
     const { role } = req.body;
+    const userId = req.params.userId;
+
+    logger.debug('Admin', `Updating role for user ${userId} to ${role}`);
 
     if (!role || !['user', 'admin'].includes(role)) {
+      logger.warn('Admin', `Invalid role provided: ${role}`);
       return res.status(400).json({ message: 'Invalid role' });
     }
 
     const user = await User.findByIdAndUpdate(
-      req.params.userId,
+      userId,
       { role },
       { new: true }
     ).select('-password');
 
     if (!user) {
+      logger.warn('Admin', `User not found with ID: ${userId}`);
       return res.status(404).json({ message: 'User not found' });
     }
 
+    logger.info('Admin', `Role updated successfully for user ${user.username}`);
     res.json(user);
   } catch (error) {
-    console.error('Error updating user role:', error);
+    logger.error('Admin', 'Error updating user role', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -78,28 +104,27 @@ router.put('/users/:userId/role', adminAuthMiddleware, async (req, res) => {
  * Route pour supprimer un utilisateur (méthode DELETE)
  */
 router.delete('/users/:userId', adminAuthMiddleware, async (req, res) => {
-  console.log('DELETE /admin/users/:userId route hit');
-  console.log('User ID to delete:', req.params.userId);
-  console.log('Request headers:', req.headers);
+  const userId = req.params.userId;
+  logger.debug('Admin', `Processing DELETE request for user ${userId}`);
 
   try {
     // Vérifier si l'utilisateur existe
-    const user = await User.findById(req.params.userId);
+    const user = await User.findById(userId);
 
     if (!user) {
-      console.log('User not found with ID:', req.params.userId);
+      logger.warn('Admin', `User not found with ID: ${userId}`);
       return res.status(404).json({ message: 'User not found' });
     }
 
-    console.log('Found user to delete:', user.username);
+    logger.debug('Admin', `Found user to delete: ${user.username}`);
 
     // Vérifier si c'est le dernier administrateur
     if (user.role === 'admin') {
       const adminCount = await User.countDocuments({ role: 'admin' });
-      console.log('Admin count:', adminCount);
+      logger.debug('Admin', `Admin count: ${adminCount}`);
 
       if (adminCount <= 1) {
-        console.log('Cannot delete the last administrator');
+        logger.warn('Admin', 'Cannot delete the last administrator');
         return res.status(400).json({
           message: 'Cannot delete the last administrator',
           error: 'Il doit y avoir au moins un administrateur dans le système'
@@ -107,41 +132,54 @@ router.delete('/users/:userId', adminAuthMiddleware, async (req, res) => {
       }
     }
 
+    // Utiliser Promise.all pour effectuer les opérations en parallèle
+    const deletePromises = [];
+
     // Supprimer les soumissions associées à cet utilisateur
-    try {
-      const deleteResult = await Submission.deleteMany({ userId: req.params.userId });
-      console.log(`Deleted ${deleteResult.deletedCount} submissions for user`);
-    } catch (submissionError) {
-      console.error('Error deleting user submissions:', submissionError);
-      // Continuer même si la suppression des soumissions échoue
-    }
+    deletePromises.push(
+      Submission.deleteMany({ userId }).then(result => {
+        logger.debug('Admin', `Deleted ${result.deletedCount} submissions for user ${userId}`);
+        return result;
+      }).catch(err => {
+        logger.error('Admin', 'Error deleting user submissions', err);
+        // Continuer même si la suppression des soumissions échoue
+        return null;
+      })
+    );
 
     // Supprimer l'utilisateur
-    const deleteResult = await User.findByIdAndDelete(req.params.userId);
-    console.log('User deletion result:', deleteResult ? 'Success' : 'Failed');
+    deletePromises.push(
+      User.findByIdAndDelete(userId).then(result => {
+        logger.debug('Admin', `User deletion result: ${result ? 'Success' : 'Failed'}`);
+        return result;
+      })
+    );
+
+    // Attendre que toutes les opérations soient terminées
+    await Promise.all(deletePromises);
 
     // Si l'utilisateur a un avatar personnalisé, le supprimer
     if (user.avatar && user.avatar.startsWith('/uploads/avatars/')) {
       try {
         const avatarPath = path.join(__dirname, '..', user.avatar);
-        console.log('Checking for avatar at path:', avatarPath);
+        logger.debug('Admin', `Checking for avatar at path: ${avatarPath}`);
 
         if (fs.existsSync(avatarPath)) {
           fs.unlinkSync(avatarPath);
-          console.log(`Avatar deleted: ${avatarPath}`);
+          logger.debug('Admin', `Avatar deleted: ${avatarPath}`);
         } else {
-          console.log('Avatar file not found at path:', avatarPath);
+          logger.debug('Admin', `Avatar file not found at path: ${avatarPath}`);
         }
       } catch (fileError) {
-        console.error('Error deleting avatar file:', fileError);
+        logger.error('Admin', 'Error deleting avatar file', fileError);
         // Continuer même si la suppression du fichier échoue
       }
     }
 
-    console.log('User deleted successfully');
+    logger.info('Admin', `User ${user.username} deleted successfully`);
     res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {
-    console.error('Error deleting user:', error);
+    logger.error('Admin', 'Error deleting user', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -222,12 +260,26 @@ router.post('/users/:userId/delete', adminAuthMiddleware, async (req, res) => {
 /**
  * Route pour récupérer tous les quiz
  */
-router.get('/quizzes', adminAuthMiddleware, async (req, res) => {
+router.get('/quizzes', adminAuthMiddleware, async (_req, res) => {
   try {
-    const quizzes = await Quiz.find();
+    logger.debug('Admin', 'Fetching all quizzes');
+
+    // Optimisation : Sélectionner uniquement les champs nécessaires
+    const quizzes = await Quiz.find({}, {
+      title: 1,
+      category: 1,
+      difficulty: 1,
+      description: 1,
+      imageUrl: 1,
+      isPublished: 1,
+      createdAt: 1,
+      updatedAt: 1
+    });
+
+    logger.debug('Admin', `Found ${quizzes.length} quizzes`);
     res.json(quizzes);
   } catch (error) {
-    console.error('Error fetching quizzes:', error);
+    logger.error('Admin', 'Error fetching quizzes', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
@@ -470,12 +522,17 @@ router.post('/import/quizzes', adminAuthMiddleware, async (req, res) => {
 /**
  * Route pour exporter tous les quiz au format JSON
  */
-router.get('/export/quizzes', adminAuthMiddleware, async (req, res) => {
+router.get('/export/quizzes', adminAuthMiddleware, async (_req, res) => {
   try {
+    logger.debug('Admin', 'Exporting all quizzes');
+
+    // Pour l'exportation, nous avons besoin de toutes les données
     const quizzes = await Quiz.find();
+
+    logger.debug('Admin', `Exporting ${quizzes.length} quizzes`);
     res.json(quizzes);
   } catch (error) {
-    console.error('Error exporting quizzes:', error);
+    logger.error('Admin', 'Error exporting quizzes', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
