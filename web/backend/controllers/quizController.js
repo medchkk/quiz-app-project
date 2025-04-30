@@ -6,9 +6,23 @@ const User = require('../models/User');
 const getQuizzes = async (_req, res) => {
   try {
     console.log('Fetching all quizzes...');
-    const quizzes = await Quiz.find({}, 'title category');
-    console.log('Quizzes found:', quizzes);
-    res.json(quizzes);
+    // Récupérer tous les quiz avec leurs questions
+    const quizzes = await Quiz.find({});
+
+    // Transformer les données pour n'inclure que les champs nécessaires
+    const transformedQuizzes = quizzes.map(quiz => ({
+      _id: quiz._id,
+      title: quiz.title,
+      category: quiz.category,
+      difficulty: quiz.difficulty,
+      description: quiz.description,
+      imageUrl: quiz.imageUrl,
+      isPublished: quiz.isPublished,
+      questions: quiz.questions // Inclure les questions complètes
+    }));
+
+    console.log('Quizzes found:', transformedQuizzes.length);
+    res.json(transformedQuizzes);
   } catch (error) {
     console.error('Error in getQuizzes:', error);
     res.status(500).json({ message: 'Server error', error });
@@ -17,31 +31,65 @@ const getQuizzes = async (_req, res) => {
 
 const getQuizById = async (req, res) => {
   try {
-    console.log('Fetching quiz with ID:', req.params.id);
+    // Utilisation du paramètre standardisé quizId
+    const quizId = req.params.quizId;
+    console.log('Fetching quiz with ID:', quizId);
     console.log('Database in use:', mongoose.connection.db.databaseName);
-    // Recherche manuelle avec findOne
-    const quiz = await Quiz.findOne({ _id: req.params.id });
+
+    // Recherche avec findById
+    const quiz = await Quiz.findById(quizId);
+
     if (!quiz) {
-      console.log('Quiz not found for ID:', req.params.id);
+      console.log('Quiz not found for ID:', quizId);
       // Vérifier si des quiz existent dans la base
-      const allQuizzes = await Quiz.find({});
-      console.log('All quizzes in database:', allQuizzes);
-      return res.status(404).json({ message: 'Quiz not found' });
+      const quizCount = await Quiz.countDocuments();
+      console.log('Number of quizzes in database:', quizCount);
+      return res.status(404).json({
+        message: 'Quiz not found',
+        error: `No quiz found with ID: ${quizId}`
+      });
     }
-    console.log('Quiz found:', quiz);
+
+    console.log('Quiz found:', quiz.title);
     res.json(quiz);
   } catch (error) {
     console.error('Error in getQuizById:', error);
-    res.status(500).json({ message: 'Server error', error });
+
+    // Amélioration de la gestion des erreurs
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        message: 'Invalid quiz ID format',
+        error: `The provided ID "${req.params.quizId}" is not a valid MongoDB ObjectId`
+      });
+    }
+
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message
+    });
   }
 };
 
 const submitQuiz = async (req, res) => {
   try {
     const { answers } = req.body;
-    const quiz = await Quiz.findById(req.params.id);
+    // Utilisation du paramètre standardisé quizId
+    const quizId = req.params.quizId;
+
+    const quiz = await Quiz.findById(quizId);
     if (!quiz) {
-      return res.status(404).json({ message: 'Quiz not found' });
+      return res.status(404).json({
+        message: 'Quiz not found',
+        error: `No quiz found with ID: ${quizId}`
+      });
+    }
+
+    // Validation des réponses
+    if (!answers || !Array.isArray(answers) || answers.length !== quiz.questions.length) {
+      return res.status(400).json({
+        message: 'Invalid answers format',
+        error: 'Answers must be an array with the same length as the quiz questions'
+      });
     }
 
     let score = 0;
@@ -61,34 +109,77 @@ const submitQuiz = async (req, res) => {
 
     const submission = new Submission({
       userId: req.user.userId,
-      quizId: req.params.id,
+      quizId: quizId,
       answers: submissionAnswers,
       score,
     });
 
     await submission.save();
 
+    // Mise à jour des statistiques de l'utilisateur
     const user = await User.findById(req.user.userId);
-    user.stats.totalScore += score;
-    user.stats.totalQuizzesCompleted = (user.stats.totalQuizzesCompleted || 0) + 1; // Incrémenter
-    await user.save();
+    if (user) {
+      // Initialiser les stats si elles n'existent pas
+      if (!user.stats) {
+        user.stats = { totalScore: 0, totalQuizzesCompleted: 0 };
+      }
 
-    res.json({ score, total: quiz.questions.length, submissionId: submission._id });
+      user.stats.totalScore = (user.stats.totalScore || 0) + score;
+      user.stats.totalQuizzesCompleted = (user.stats.totalQuizzesCompleted || 0) + 1;
+      await user.save();
+    }
+
+    res.json({
+      score,
+      total: quiz.questions.length,
+      submissionId: submission._id,
+      message: 'Quiz submitted successfully'
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    console.error('Error in submitQuiz:', error);
+
+    // Amélioration de la gestion des erreurs
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        message: 'Invalid quiz ID format',
+        error: `The provided ID "${req.params.quizId}" is not a valid MongoDB ObjectId`
+      });
+    }
+
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message
+    });
   }
 };
 
 const getSubmissionDetails = async (req, res) => {
   try {
-    const submission = await Submission.findById(req.params.submissionId);
+    const submissionId = req.params.submissionId;
+    console.log('Fetching submission details for ID:', submissionId);
+
+    const submission = await Submission.findById(submissionId);
     if (!submission) {
-      return res.status(404).json({ message: 'Submission not found' });
+      return res.status(404).json({
+        message: 'Submission not found',
+        error: `No submission found with ID: ${submissionId}`
+      });
+    }
+
+    // Vérifier si l'utilisateur est autorisé à voir cette soumission
+    if (submission.userId.toString() !== req.user.userId && req.user.role !== 'admin') {
+      return res.status(403).json({
+        message: 'Not authorized',
+        error: 'You are not authorized to view this submission'
+      });
     }
 
     const quiz = await Quiz.findById(submission.quizId);
     if (!quiz) {
-      return res.status(404).json({ message: 'Quiz not found' });
+      return res.status(404).json({
+        message: 'Quiz not found',
+        error: `The quiz associated with this submission (ID: ${submission.quizId}) was not found`
+      });
     }
 
     const results = submission.answers.map(answer => {
@@ -106,9 +197,24 @@ const getSubmissionDetails = async (req, res) => {
       score: submission.score,
       total: quiz.questions.length,
       results,
+      submittedAt: submission.createdAt,
+      message: 'Submission details retrieved successfully'
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    console.error('Error in getSubmissionDetails:', error);
+
+    // Amélioration de la gestion des erreurs
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        message: 'Invalid submission ID format',
+        error: `The provided ID "${req.params.submissionId}" is not a valid MongoDB ObjectId`
+      });
+    }
+
+    res.status(500).json({
+      message: 'Server error',
+      error: error.message
+    });
   }
 };
 

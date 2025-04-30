@@ -41,6 +41,13 @@ const getUserProfile = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    console.log('User found in database:', {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role || 'user'
+    });
+
     // Si l'utilisateur n'a pas d'avatar, générer un avatar par défaut
     if (!user.avatar) {
       user.avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=0D8ABC&color=fff`;
@@ -56,7 +63,8 @@ const getUserProfile = async (req, res) => {
     res.json({
       username: user.username,
       email: user.email,
-      avatar: user.avatar
+      avatar: user.avatar,
+      role: user.role || 'user' // Ajouter le rôle de l'utilisateur
     });
   } catch (error) {
     console.error('Error fetching user profile:', error);

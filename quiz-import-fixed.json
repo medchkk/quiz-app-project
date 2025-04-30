@@ -1,0 +1,265 @@
+[
+  {
+    "title": "Culture Générale Française",
+    "category": "Culture",
+    "difficulty": "intermédiaire",
+    "description": "Testez vos connaissances sur la culture française",
+    "isPublished": true,
+    "questions": [
+      {
+        "text": "Quel est le plus long fleuve de France ?",
+        "options": ["La Seine", "La Loire", "Le Rhône", "La Garonne"],
+        "correctAnswer": 1,
+        "explanation": "La Loire est le plus long fleuve de France avec 1006 km."
+      },
+      {
+        "text": "Qui a peint 'La Joconde' ?",
+        "options": ["Claude Monet", "Pablo Picasso", "Léonard de Vinci", "Vincent Van Gogh"],
+        "correctAnswer": 2,
+        "explanation": "La Joconde a été peinte par Léonard de Vinci au début du XVIe siècle."
+      },
+      {
+        "text": "Quel est le fromage français le plus consommé en France ?",
+        "options": ["Camembert", "Brie", "Comté", "Emmental"],
+        "correctAnswer": 3,
+        "explanation": "L'Emmental est le fromage le plus consommé en France, suivi du Camembert."
+      },
+      {
+        "text": "Quelle est la capitale de la Bretagne ?",
+        "options": ["Nantes", "Rennes", "Brest", "Quimper"],
+        "correctAnswer": 1,
+        "explanation": "Rennes est la capitale administrative de la région Bretagne."
+      }
+    ]
+  },
+  {
+    "title": "Programmation JavaScript",
+    "category": "Technologie",
+    "difficulty": "expert",
+    "description": "Un quiz avancé sur JavaScript pour les développeurs",
+    "isPublished": true,
+    "questions": [
+      {
+        "text": "Quelle méthode permet de créer une promesse qui se résout après un délai spécifié ?",
+        "options": ["setTimeout()", "Promise.delay()", "new Promise() avec setTimeout", "async/await"],
+        "correctAnswer": 2,
+        "explanation": "On peut créer une promesse avec un délai en utilisant new Promise() combiné avec setTimeout."
+      },
+      {
+        "text": "Qu'est-ce que le 'hoisting' en JavaScript ?",
+        "options": [
+          "Une technique d'optimisation du navigateur",
+          "Le déplacement des déclarations vers le haut de leur portée",
+          "Une méthode de gestion de la mémoire",
+          "Un pattern de conception"
+        ],
+        "correctAnswer": 1,
+        "explanation": "Le hoisting est le comportement par défaut de JavaScript qui déplace les déclarations vers le haut de leur portée avant l'exécution du code."
+      },
+      {
+        "text": "Comment créer une copie profonde d'un objet en JavaScript ?",
+        "options": [
+          "Object.assign({}, obj)",
+          "JSON.parse(JSON.stringify(obj))",
+          "{...obj}",
+          "obj.clone()"
+        ],
+        "correctAnswer": 1,
+        "explanation": "JSON.parse(JSON.stringify(obj)) est une méthode simple pour créer une copie profonde, bien qu'elle ait des limitations (ne fonctionne pas avec les fonctions, dates, etc.)."
+      },
+      {
+        "text": "Quelle est la différence entre == et === en JavaScript ?",
+        "options": [
+          "Aucune différence",
+          "== compare les valeurs, === compare les valeurs et les types",
+          "== est obsolète",
+          "=== est plus rapide"
+        ],
+        "correctAnswer": 1,
+        "explanation": "== effectue une conversion de type avant la comparaison, tandis que === compare à la fois la valeur et le type sans conversion."
+      },
+      {
+        "text": "Qu'est-ce que le 'temporal dead zone' en JavaScript ?",
+        "options": [
+          "Une zone de mémoire réservée aux variables temporaires",
+          "Un bug dans les anciennes versions de JavaScript",
+          "La période entre la création d'une variable let/const et son initialisation",
+          "Une technique d'optimisation du moteur JavaScript"
+        ],
+        "correctAnswer": 2,
+        "explanation": "La 'temporal dead zone' est la période entre l'entrée dans la portée d'une variable déclarée avec let/const et son initialisation, pendant laquelle la variable ne peut pas être accédée."
+      }
+    ]
+  },
+  {
+    "title": "Géographie Mondiale",
+    "category": "Géographie",
+    "difficulty": "débutant",
+    "description": "Testez vos connaissances sur la géographie du monde",
+    "isPublished": true,
+    "questions": [
+      {
+        "text": "Quelle est la plus haute montagne du monde ?",
+        "options": ["K2", "Mont Blanc", "Mont Everest", "Kilimandjaro"],
+        "correctAnswer": 2,
+        "explanation": "Le Mont Everest est la plus haute montagne du monde avec 8 848 mètres d'altitude."
+      },
+      {
+        "text": "Quel est le plus grand océan du monde ?",
+        "options": ["Océan Atlantique", "Océan Indien", "Océan Arctique", "Océan Pacifique"],
+        "correctAnswer": 3,
+        "explanation": "L'Océan Pacifique est le plus grand océan du monde, couvrant environ un tiers de la surface de la Terre."
+      },
+      {
+        "text": "Quel est le plus grand pays du monde en termes de superficie ?",
+        "options": ["Canada", "Chine", "États-Unis", "Russie"],
+        "correctAnswer": 3,
+        "explanation": "La Russie est le plus grand pays du monde avec une superficie de plus de 17 millions de km²."
+      },
+      {
+        "text": "Quelle est la capitale de l'Australie ?",
+        "options": ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+        "correctAnswer": 2,
+        "explanation": "Canberra est la capitale de l'Australie, bien que Sydney et Melbourne soient des villes plus grandes."
+      }
+    ]
+  },
+  {
+    "title": "Histoire des Sciences",
+    "category": "Sciences",
+    "difficulty": "intermédiaire",
+    "description": "Découvrez les grandes découvertes scientifiques à travers l'histoire",
+    "isPublished": true,
+    "questions": [
+      {
+        "text": "Qui a formulé la théorie de la relativité ?",
+        "options": ["Isaac Newton", "Albert Einstein", "Niels Bohr", "Galileo Galilei"],
+        "correctAnswer": 1,
+        "explanation": "Albert Einstein a formulé la théorie de la relativité restreinte en 1905 et la théorie de la relativité générale en 1915."
+      },
+      {
+        "text": "Quelle découverte est attribuée à Alexander Fleming ?",
+        "options": ["La pénicilline", "La vaccination", "La structure de l'ADN", "La radioactivité"],
+        "correctAnswer": 0,
+        "explanation": "Alexander Fleming a découvert la pénicilline en 1928, ce qui a révolutionné le traitement des infections bactériennes."
+      },
+      {
+        "text": "Qui a proposé la théorie de l'évolution par sélection naturelle ?",
+        "options": ["Gregor Mendel", "Louis Pasteur", "Charles Darwin", "Alfred Wallace"],
+        "correctAnswer": 2,
+        "explanation": "Charles Darwin a publié 'L'Origine des espèces' en 1859, présentant sa théorie de l'évolution par sélection naturelle."
+      },
+      {
+        "text": "Quelle particule élémentaire a été découverte au CERN en 2012 ?",
+        "options": ["Le quark top", "Le boson de Higgs", "Le neutrino", "L'électron"],
+        "correctAnswer": 1,
+        "explanation": "Le boson de Higgs, parfois appelé 'particule de Dieu', a été découvert au CERN en 2012, confirmant le modèle standard de la physique des particules."
+      }
+    ]
+  },
+  {
+    "title": "Cinéma Français",
+    "category": "Cinéma",
+    "difficulty": "intermédiaire",
+    "description": "Un quiz sur les grands classiques et réalisateurs du cinéma français",
+    "isPublished": true,
+    "questions": [
+      {
+        "text": "Qui a réalisé le film 'Le Fabuleux Destin d'Amélie Poulain' ?",
+        "options": ["François Truffaut", "Jean-Luc Godard", "Jean-Pierre Jeunet", "Luc Besson"],
+        "correctAnswer": 2,
+        "explanation": "Jean-Pierre Jeunet a réalisé ce film culte sorti en 2001, avec Audrey Tautou dans le rôle principal."
+      },
+      {
+        "text": "Quel acteur français a remporté l'Oscar du meilleur acteur pour 'The Artist' ?",
+        "options": ["Vincent Cassel", "Jean Dujardin", "Gérard Depardieu", "Alain Delon"],
+        "correctAnswer": 1,
+        "explanation": "Jean Dujardin a remporté l'Oscar du meilleur acteur en 2012 pour son rôle dans 'The Artist', devenant le premier acteur français à recevoir cette distinction."
+      },
+      {
+        "text": "Qui est considéré comme le père de la Nouvelle Vague française ?",
+        "options": ["François Truffaut", "Jean-Luc Godard", "Claude Chabrol", "Éric Rohmer"],
+        "correctAnswer": 0,
+        "explanation": "François Truffaut est souvent considéré comme le père de la Nouvelle Vague avec son film 'Les 400 coups' (1959)."
+      },
+      {
+        "text": "Quel film de Jacques Tati met en scène le personnage de Monsieur Hulot ?",
+        "options": ["Jour de fête", "Les Vacances de Monsieur Hulot", "Playtime", "Mon Oncle"],
+        "correctAnswer": 1,
+        "explanation": "Le personnage de Monsieur Hulot apparaît pour la première fois dans 'Les Vacances de Monsieur Hulot' (1953), puis dans plusieurs autres films de Jacques Tati."
+      }
+    ]
+  },
+  {
+    "title": "Littérature Classique",
+    "category": "Littérature",
+    "difficulty": "expert",
+    "description": "Testez vos connaissances sur les grands classiques de la littérature mondiale",
+    "isPublished": true,
+    "questions": [
+      {
+        "text": "Qui a écrit 'Crime et Châtiment' ?",
+        "options": ["Léon Tolstoï", "Fiodor Dostoïevski", "Anton Tchekhov", "Ivan Tourgueniev"],
+        "correctAnswer": 1,
+        "explanation": "Fiodor Dostoïevski a écrit 'Crime et Châtiment', publié en 1866, l'un des romans les plus influents de la littérature russe."
+      },
+      {
+        "text": "Quel auteur français a écrit 'À la recherche du temps perdu' ?",
+        "options": ["Victor Hugo", "Gustave Flaubert", "Marcel Proust", "Émile Zola"],
+        "correctAnswer": 2,
+        "explanation": "Marcel Proust a écrit cette œuvre monumentale en sept tomes, publiée entre 1913 et 1927."
+      },
+      {
+        "text": "Qui est l'auteur de 'Cent ans de solitude' ?",
+        "options": ["Jorge Luis Borges", "Gabriel García Márquez", "Julio Cortázar", "Mario Vargas Llosa"],
+        "correctAnswer": 1,
+        "explanation": "Gabriel García Márquez, écrivain colombien, a publié ce chef-d'œuvre du réalisme magique en 1967."
+      },
+      {
+        "text": "Quel roman de Jane Austen commence par 'C'est une vérité universellement reconnue qu'un célibataire pourvu d'une belle fortune doit avoir envie de se marier' ?",
+        "options": ["Emma", "Raison et Sentiments", "Orgueil et Préjugés", "Persuasion"],
+        "correctAnswer": 2,
+        "explanation": "Cette célèbre première phrase ouvre 'Orgueil et Préjugés', publié en 1813."
+      },
+      {
+        "text": "Qui a écrit 'L'Étranger' ?",
+        "options": ["Jean-Paul Sartre", "Albert Camus", "Simone de Beauvoir", "André Malraux"],
+        "correctAnswer": 1,
+        "explanation": "Albert Camus a publié 'L'Étranger' en 1942, un roman emblématique de l'absurdisme."
+      }
+    ]
+  },
+  {
+    "title": "Sport et Jeux Olympiques",
+    "category": "Sport",
+    "difficulty": "débutant",
+    "description": "Quiz sur l'histoire des Jeux Olympiques et des sports populaires",
+    "isPublished": true,
+    "questions": [
+      {
+        "text": "Dans quelle ville se sont déroulés les premiers Jeux Olympiques modernes en 1896 ?",
+        "options": ["Paris", "Athènes", "Londres", "Rome"],
+        "correctAnswer": 1,
+        "explanation": "Les premiers Jeux Olympiques modernes ont eu lieu à Athènes, en Grèce, du 6 au 15 avril 1896."
+      },
+      {
+        "text": "Combien de joueurs composent une équipe de football sur le terrain ?",
+        "options": ["9", "10", "11", "12"],
+        "correctAnswer": 2,
+        "explanation": "Une équipe de football est composée de 11 joueurs sur le terrain, dont un gardien de but."
+      },
+      {
+        "text": "Quel pays a remporté le plus de médailles d'or aux Jeux Olympiques d'été ?",
+        "options": ["États-Unis", "Union soviétique/Russie", "Chine", "Allemagne"],
+        "correctAnswer": 0,
+        "explanation": "Les États-Unis ont remporté le plus grand nombre de médailles d'or dans l'histoire des Jeux Olympiques d'été."
+      },
+      {
+        "text": "Dans quel sport peut-on réaliser un 'grand chelem' ?",
+        "options": ["Tennis", "Golf", "Rugby", "Toutes ces réponses"],
+        "correctAnswer": 3,
+        "explanation": "Le terme 'grand chelem' existe dans plusieurs sports, notamment le tennis, le golf et le rugby, avec des significations légèrement différentes."
+      }
+    ]
+  }
+]

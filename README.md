@@ -44,7 +44,7 @@ Le projet est organisé en deux parties principales :
   - **frontend/** : Application React avec Capacitor et fonctionnalités hors-ligne
   - **data/** : Données JSON pour le mode hors-ligne
 
-## � Captures d'écran
+## 📸 Captures d'écran
 
 ### Page d'accueil
 ![Page d'accueil](frontend/quiz-app/public/screenshots/home.png)
@@ -55,9 +55,9 @@ Le projet est organisé en deux parties principales :
 ### Profil utilisateur
 ![Profil utilisateur](frontend/quiz-app/public/screenshots/profile.png)
 
-## �📋 Prérequis
+## 📋 Prérequis
 
-- **Node.js** (v14+) et npm
+- **Node.js** (v16+) et npm
 - **MongoDB** (local ou distant)
 - **Navigateur web moderne** (Chrome, Firefox, Safari, Edge)
 - **Git** pour le clonage du dépôt
@@ -128,7 +128,7 @@ npx cap open android
 L'application frontend sera accessible à l'adresse : http://localhost:5173
 L'API backend sera accessible à l'adresse : http://localhost:5000
 
-## � Structure du projet
+## 📁 Structure du projet
 
 ```
 quiz-app-project/
@@ -172,7 +172,7 @@ quiz-app-project/
 └── README.md               # Documentation principale
 ```
 
-## �📱 Utilisation
+## 📱 Utilisation
 
 1. **Inscription/Connexion** : Créez un compte ou connectez-vous avec vos identifiants
 2. **Exploration** : Parcourez les différentes catégories de quiz disponibles

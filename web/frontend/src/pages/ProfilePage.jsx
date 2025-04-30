@@ -13,16 +13,20 @@ import {
   FaTimes,
   FaCamera,
   FaTrophy,
-  FaQuestionCircle
+  FaQuestionCircle,
+  FaCrown,
+  FaShieldAlt
 } from 'react-icons/fa';
 import api from '../utils/api';
 import ThemeToggle from '../components/ThemeToggle';
+import { STORAGE_KEYS } from '../utils/constants';
 
 const ProfilePage = () => {
   const [userData, setUserData] = useState({
     username: '',
     email: '',
-    avatar: null
+    avatar: null,
+    role: ''
   });
   const [stats, setStats] = useState({ totalScore: 0, totalQuizzesCompleted: 0 });
   const [error, setError] = useState('');
@@ -52,11 +56,21 @@ const ProfilePage = () => {
 
         // Stocker les informations utilisateur dans le localStorage
         const username = userResponse.data.username;
-        localStorage.setItem('username', username);
-        localStorage.setItem('email', userResponse.data.email);
+        localStorage.setItem(STORAGE_KEYS.USERNAME, username);
+        localStorage.setItem(STORAGE_KEYS.EMAIL, userResponse.data.email);
+
+        // Vérifier et stocker le rôle de l'utilisateur
+        console.log('ProfilePage: Full user data received:', userResponse.data);
+        if (userResponse.data.role) {
+          console.log(`ProfilePage: User role is "${userResponse.data.role}"`);
+          localStorage.setItem(STORAGE_KEYS.USER_ROLE, userResponse.data.role);
+          console.log(`ProfilePage: Role stored in localStorage: "${localStorage.getItem(STORAGE_KEYS.USER_ROLE)}"`);
+        } else {
+          console.log('ProfilePage: No role found in user data');
+        }
 
         // Créer une clé spécifique à l'utilisateur pour l'avatar
-        const userAvatarKey = `userAvatar_${username}`;
+        const userAvatarKey = `${STORAGE_KEYS.AVATAR_PREFIX}${username}`;
         console.log(`Using avatar key: ${userAvatarKey} for user: ${username}`);
 
         // Priorité à l'avatar stocké dans le localStorage pour cet utilisateur spécifique
@@ -107,7 +121,7 @@ const ProfilePage = () => {
         }
 
         // Stocker la clé de l'avatar actuel pour pouvoir l'utiliser ailleurs dans l'application
-        localStorage.setItem('currentAvatarKey', userAvatarKey);
+        localStorage.setItem(STORAGE_KEYS.CURRENT_AVATAR_KEY, userAvatarKey);
 
         setUserData(userResponse.data);
 
@@ -500,8 +514,13 @@ const ProfilePage = () => {
               </button>
             )}
           </div>
-          <h2 className="text-3xl font-bold text-[var(--text-dark-blue)] mt-3">
+          <h2 className="text-3xl font-bold text-[var(--text-dark-blue)] mt-3 flex items-center justify-center">
             {userData.username}
+            {userData.role === 'admin' && (
+              <span className="ml-3 bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-sm flex items-center">
+                <FaCrown className="mr-1" /> Administrateur
+              </span>
+            )}
           </h2>
           <p className="text-[var(--text-medium-blue)]">{userData.email}</p>
         </div>
@@ -759,6 +778,27 @@ const ProfilePage = () => {
                 </div>
               </div>
             </div>
+
+            {/* Lien vers l'administration (pour les administrateurs) */}
+            {userData.role === 'admin' && (
+              <Link
+                to="/admin"
+                className="bg-yellow-50 border-2 border-yellow-500 p-6 rounded-lg shadow-md mb-6 block hover:shadow-lg transition-shadow"
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <FaShieldAlt className="text-2xl mr-3 text-yellow-600" />
+                    <h3 className="text-xl font-semibold text-yellow-800">
+                      Administration
+                    </h3>
+                  </div>
+                  <FaArrowLeft className="transform rotate-180 text-yellow-600" />
+                </div>
+                <p className="text-gray-600 mt-2 ml-9">
+                  Gérer les quiz, les utilisateurs et les paramètres de l'application
+                </p>
+              </Link>
+            )}
 
             {/* Lien vers l'historique */}
             <Link

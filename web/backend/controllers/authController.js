@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -39,10 +39,34 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    // Créer le payload du token avec le rôle de l'utilisateur
+    const tokenPayload = {
+      userId: user._id,
+      role: user.role || 'user' // Inclure le rôle dans le token
+    };
+
+    console.log('Creating JWT token with payload:', tokenPayload);
+
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
-    res.json({ token });
+
+    // Préparer les informations utilisateur à renvoyer
+    const userInfo = {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role || 'user',
+      avatar: user.avatar
+    };
+
+    console.log('Sending user info in response:', userInfo);
+
+    // Renvoyer le token et les informations de base de l'utilisateur
+    res.json({
+      token,
+      user: userInfo
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }

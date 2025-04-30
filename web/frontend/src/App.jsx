@@ -9,8 +9,15 @@ import ProfilePage from './pages/ProfilePage';
 import HistoryPage from './pages/HistoryPage';
 import Topics from './pages/Topics';
 import PlayQuiz from './pages/PlayQuiz';
+import AdminDashboard from './pages/admin/Dashboard';
+import QuizManagement from './pages/admin/QuizManagement';
+import QuizForm from './pages/admin/QuizForm';
+import UserManagement from './pages/admin/UserManagement';
+import ImportExport from './pages/admin/ImportExport';
+import AdminRoute from './components/AdminRoute';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { cleanLocalStorage } from './utils/cleanLocalStorage';
+import './styles/admin.css';
 
 /**
  * Composant principal de l'application
@@ -50,6 +57,13 @@ function App() {
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/topics" element={<Topics />} />
           <Route path="/play" element={<PlayQuiz />} />
+
+          {/* Routes d'administration */}
+          <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+          <Route path="/admin/quizzes" element={<AdminRoute><QuizManagement /></AdminRoute>} />
+          <Route path="/admin/quizzes/:quizId" element={<AdminRoute><QuizForm /></AdminRoute>} />
+          <Route path="/admin/users" element={<AdminRoute><UserManagement /></AdminRoute>} />
+          <Route path="/admin/import-export" element={<AdminRoute><ImportExport /></AdminRoute>} />
         </Routes>
       </div>
     </ThemeProvider>

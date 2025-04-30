@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaLock } from 'react-icons/fa'; // Icônes pour email et mot de passe
 import axios from 'axios';
 import ThemeToggle from '../components/ThemeToggle';
+import { STORAGE_KEYS } from '../utils/constants';
 
 
 function Login() {
@@ -19,10 +20,34 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Étape 1: Connexion pour obtenir le token
+      // Étape 1: Connexion pour obtenir le token et les informations utilisateur
       const response = await axios.post('http://localhost:5000/auth/login', formData);
       const token = response.data.token;
-      localStorage.setItem('token', token);
+      localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+
+      // Si la réponse contient des informations utilisateur, les stocker
+      if (response.data.user) {
+        console.log('Login: User data received from login response');
+        localStorage.setItem(STORAGE_KEYS.USERNAME, response.data.user.username);
+        localStorage.setItem(STORAGE_KEYS.EMAIL, response.data.user.email);
+
+        // Stocker le rôle de l'utilisateur
+        if (response.data.user.role) {
+          console.log(`Login: User role is "${response.data.user.role}"`);
+          localStorage.setItem(STORAGE_KEYS.USER_ROLE, response.data.user.role);
+          console.log(`Login: Role stored in localStorage: "${localStorage.getItem(STORAGE_KEYS.USER_ROLE)}"`);
+        } else {
+          console.log('Login: No role found in user data');
+        }
+
+        // Gérer l'avatar si présent
+        if (response.data.user.avatar) {
+          const username = response.data.user.username;
+          const userAvatarKey = `${STORAGE_KEYS.AVATAR_PREFIX}${username}`;
+          localStorage.setItem(STORAGE_KEYS.CURRENT_AVATAR_KEY, userAvatarKey);
+          localStorage.setItem(userAvatarKey, response.data.user.avatar);
+        }
+      }
 
       // Étape 2: Récupérer les informations du profil utilisateur
       try {
@@ -34,15 +59,27 @@ function Login() {
 
         // Stocker les informations utilisateur dans le localStorage
         const username = userResponse.data.username;
-        localStorage.setItem('username', username);
-        localStorage.setItem('email', userResponse.data.email);
+        localStorage.setItem(STORAGE_KEYS.USERNAME, username);
+        localStorage.setItem(STORAGE_KEYS.EMAIL, userResponse.data.email);
+
+        // Stocker le rôle de l'utilisateur s'il est présent
+        if (userResponse.data.role) {
+          console.log(`Profile: User role is "${userResponse.data.role}"`);
+          localStorage.setItem(STORAGE_KEYS.USER_ROLE, userResponse.data.role);
+          console.log(`Profile: Role stored in localStorage: "${localStorage.getItem(STORAGE_KEYS.USER_ROLE)}"`);
+        } else {
+          console.log('Profile: No role found in profile data');
+        }
+
+        // Afficher toutes les données du profil pour le débogage
+        console.log('Profile data received:', userResponse.data);
 
         // Créer une clé spécifique à l'utilisateur pour l'avatar
-        const userAvatarKey = `userAvatar_${username}`;
+        const userAvatarKey = `${STORAGE_KEYS.AVATAR_PREFIX}${username}`;
         console.log(`Login: Using avatar key: ${userAvatarKey} for user: ${username}`);
 
         // Stocker la clé de l'avatar actuel
-        localStorage.setItem('currentAvatarKey', userAvatarKey);
+        localStorage.setItem(STORAGE_KEYS.CURRENT_AVATAR_KEY, userAvatarKey);
 
         // Si l'utilisateur a un avatar dans la réponse API, le stocker
         if (userResponse.data.avatar) {

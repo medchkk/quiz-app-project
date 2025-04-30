@@ -4,8 +4,8 @@ const { getQuizzes, getQuizById, submitQuiz, getSubmissionDetails } = require('.
 const authMiddleware = require('../middleware/auth');
 
 router.get('/', authMiddleware, getQuizzes);
-router.get('/:id', authMiddleware, getQuizById); // authMiddleware réactivé
-router.post('/:id/submit', authMiddleware, submitQuiz);
+router.get('/:quizId', authMiddleware, getQuizById); // Standardisation des paramètres
+router.post('/:quizId/submit', authMiddleware, submitQuiz);
 router.get('/submission/:submissionId', authMiddleware, getSubmissionDetails);
 
 module.exports = router;

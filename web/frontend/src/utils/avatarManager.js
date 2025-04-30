@@ -6,7 +6,7 @@ import logger from './logger';
 import { STORAGE_KEYS } from './constants';
 
 // URL de base de l'API
-const API_URL = 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 /**
  * Récupère la clé d'avatar spécifique à un utilisateur
@@ -68,14 +68,14 @@ export const getUserAvatar = (username) => {
   try {
     // Récupérer la clé d'avatar
     const avatarKey = getUserAvatarKey(username);
-    
+
     // Stocker la clé d'avatar actuelle
     localStorage.setItem(STORAGE_KEYS.CURRENT_AVATAR_KEY, avatarKey);
     logger.debug('Avatar', `Using avatar key: ${avatarKey} for user: ${username}`);
-    
+
     // Récupérer l'avatar du localStorage
     let avatarUrl = localStorage.getItem(avatarKey);
-    
+
     // Vérifier si l'avatar existe avec l'ancienne clé générique
     if (!avatarUrl && localStorage.getItem('userAvatar')) {
       const genericAvatar = localStorage.getItem('userAvatar');
@@ -84,18 +84,18 @@ export const getUserAvatar = (username) => {
       localStorage.removeItem('userAvatar');
       avatarUrl = genericAvatar;
     }
-    
+
     // Déterminer le type d'avatar
     const isExternal = isExternalAvatar(avatarUrl);
     const isBase64 = isBase64Avatar(avatarUrl);
     const isRelative = isRelativePath(avatarUrl);
-    
+
     // Si c'est un chemin relatif, convertir en URL complète
     if (isRelative) {
       logger.debug('Avatar', 'Converting relative path to full URL');
       avatarUrl = getFullAvatarUrl(avatarUrl);
     }
-    
+
     return {
       avatarUrl,
       avatarKey,
@@ -127,24 +127,24 @@ export const saveUserAvatar = (username, avatarUrl) => {
       logger.warn('Avatar', 'Missing username or avatarUrl');
       return null;
     }
-    
+
     // Récupérer la clé d'avatar
     const avatarKey = getUserAvatarKey(username);
-    
+
     // Stocker l'avatar
     localStorage.setItem(avatarKey, avatarUrl);
-    
+
     // Stocker la clé d'avatar actuelle
     localStorage.setItem(STORAGE_KEYS.CURRENT_AVATAR_KEY, avatarKey);
-    
+
     logger.debug('Avatar', `Saved avatar with key ${avatarKey}`);
-    
+
     // Supprimer l'ancienne clé générique si elle existe
     if (localStorage.getItem('userAvatar')) {
       logger.debug('Avatar', 'Removing generic userAvatar key');
       localStorage.removeItem('userAvatar');
     }
-    
+
     return avatarKey;
   } catch (error) {
     logger.error('Avatar', 'Error saving user avatar', error);
@@ -161,24 +161,36 @@ export const getUserProfile = () => {
     // Récupérer les données utilisateur du localStorage
     const username = localStorage.getItem(STORAGE_KEYS.USERNAME) || 'Utilisateur';
     const email = localStorage.getItem(STORAGE_KEYS.EMAIL) || 'user@example.com';
-    
+    const role = localStorage.getItem(STORAGE_KEYS.USER_ROLE) || 'user'; // Récupérer le rôle de l'utilisateur
+    console.log(`Avatar Manager: User role is "${role}" for user "${username}"`);
+
     // Récupérer l'avatar
     const { avatarUrl } = getUserAvatar(username);
-    
+
     // Utiliser l'avatar ou l'avatar par défaut
-    const avatar = avatarUrl || '/default-avatar.svg';
-    
+    let avatar = avatarUrl || '/default-avatar.svg';
+
+    // S'assurer que les chemins relatifs sont convertis en URL complètes
+    if (avatar && avatar.startsWith('/uploads/')) {
+      avatar = `${API_URL}${avatar}`;
+      console.log('Avatar Manager: Converted relative path to full URL:', avatar);
+    }
+
+    logger.debug('Avatar', `User profile loaded with role: ${role}`);
+
     return {
       username,
       email,
-      avatar
+      avatar,
+      role // Inclure le rôle dans le profil
     };
   } catch (error) {
     logger.error('Avatar', 'Error getting user profile', error);
     return {
       username: 'Utilisateur',
       email: 'user@example.com',
-      avatar: '/default-avatar.svg'
+      avatar: '/default-avatar.svg',
+      role: 'user' // Valeur par défaut pour le rôle
     };
   }
 };
@@ -192,12 +204,12 @@ export const handleAvatarError = (event) => {
   try {
     logger.warn('Avatar', 'Error loading avatar image');
     event.target.onerror = null; // Prevent infinite loop
-    
+
     // Récupérer l'avatar actuel
     const username = localStorage.getItem(STORAGE_KEYS.USERNAME) || 'Utilisateur';
     const avatarKey = getUserAvatarKey(username);
     const currentAvatar = localStorage.getItem(avatarKey);
-    
+
     // Vérifier si c'est un chemin relatif
     if (currentAvatar && isRelativePath(currentAvatar)) {
       logger.debug('Avatar', 'Avatar is a relative path, prefixing with server URL');
@@ -205,8 +217,8 @@ export const handleAvatarError = (event) => {
       logger.debug('Avatar', 'Using full URL');
       event.target.src = fullUrl;
       return fullUrl;
-    } 
-    
+    }
+
     // Sinon, utiliser l'avatar par défaut
     logger.debug('Avatar', 'Using default avatar as fallback');
     event.target.src = '/default-avatar.svg';

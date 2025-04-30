@@ -3,7 +3,7 @@
  */
 
 // URL de l'API
-export const API_URL = 'http://localhost:5000';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // URL pour les avatars générés
 export const UI_AVATARS_URL = 'https://ui-avatars.com/api';
@@ -14,6 +14,7 @@ export const STORAGE_KEYS = {
   USERNAME: 'username',
   EMAIL: 'email',
   THEME: 'theme',
+  USER_ROLE: 'userRole',
   AVATAR_PREFIX: 'userAvatar_',
   CURRENT_AVATAR_KEY: 'currentAvatarKey',
   APP_INITIALIZED: 'app_initialized',

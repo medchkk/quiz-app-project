@@ -9,6 +9,28 @@ const quizSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  difficulty: {
+    type: String,
+    enum: ['débutant', 'intermédiaire', 'expert'],
+    default: 'intermédiaire'
+  },
+  description: {
+    type: String,
+    default: ''
+  },
+  imageUrl: {
+    type: String,
+    default: null
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  isPublished: {
+    type: Boolean,
+    default: true
+  },
   questions: [
     {
       text: {
@@ -23,8 +45,16 @@ const quizSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      explanation: {
+        type: String,
+        default: ''
+      },
+      imageUrl: {
+        type: String,
+        default: null
+      }
     },
   ],
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Quiz', quizSchema);

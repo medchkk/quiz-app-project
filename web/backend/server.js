@@ -6,6 +6,7 @@ const logger = require('./utils/logger');
 const authRoutes = require('./routes/auth');
 const quizRoutes = require('./routes/quizzes');
 const userRoutes = require('./routes/users');
+const adminRoutes = require('./routes/admin');
 require('dotenv').config();
 
 // Configuration
@@ -49,6 +50,7 @@ mongoose.connect(MONGODB_URI)
 app.use('/auth', authRoutes);
 app.use('/quizzes', quizRoutes);
 app.use('/users', userRoutes);
+app.use('/admin', adminRoutes);
 
 // Route par défaut
 app.get('/', (_req, res) => {

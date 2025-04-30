@@ -1,0 +1,131 @@
+/* Styles spécifiques pour l'interface d'administration */
+
+/* Animation de spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--button-cyan);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation de fade-in */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Styles pour les graphiques */
+.chart-container {
+  background-color: var(--card-bg);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Couleurs personnalisées pour les graphiques */
+:root {
+  --chart-color-1: var(--button-cyan);
+  --chart-color-2: var(--wave-yellow);
+  --chart-color-3: var(--wave-pink);
+  --chart-color-4: var(--button-medium-blue);
+  --chart-color-5: #6366F1;
+  --chart-grid-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Styles pour les tableaux */
+.admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.admin-table th {
+  background-color: var(--button-dark-blue);
+  background-opacity: 0.1;
+  color: var(--text-dark-blue);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+}
+
+.admin-table td {
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table tr:hover {
+  background-color: var(--button-dark-blue);
+  background-opacity: 0.05;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-cyan {
+  background-color: var(--button-cyan);
+  background-opacity: 0.2;
+  color: var(--button-cyan);
+}
+
+.badge-yellow {
+  background-color: var(--wave-yellow);
+  background-opacity: 0.2;
+  color: var(--wave-yellow);
+}
+
+.badge-pink {
+  background-color: var(--wave-pink);
+  background-opacity: 0.2;
+  color: var(--wave-pink);
+}
+
+.badge-blue {
+  background-color: var(--button-medium-blue);
+  background-opacity: 0.2;
+  color: var(--button-medium-blue);
+}
+
+/* Styles pour la barre de navigation */
+.sidebar-nav-link {
+  transition: all 0.3s ease;
+}
+
+.sidebar-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav-icon {
+  transition: all 0.3s ease;
+}
+
+.sidebar-nav-link:hover .sidebar-nav-icon {
+  transform: scale(1.1);
+}

@@ -10,12 +10,15 @@ import {
   FaInstagram,
   FaFacebook,
   FaTiktok,
-  FaCopyright
+  FaCopyright,
+  FaCrown,
+  FaShieldAlt
 } from 'react-icons/fa';
 import ThemeToggle from '../components/ThemeToggle';
 import quizLogo from '../assets/quiz.png';
 import avatarManager from '../utils/avatarManager';
 import logger from '../utils/logger';
+import { STORAGE_KEYS } from '../utils/constants';
 
 /**
  * Page d'accueil de l'application
@@ -28,7 +31,9 @@ const Home = () => {
   // Initialisation du profil utilisateur
   const [userProfile, setUserProfile] = useState(() => {
     logger.debug('Home', 'Initializing user profile');
-    return avatarManager.getUserProfile();
+    const profile = avatarManager.getUserProfile();
+    console.log('Home: Initial user profile loaded:', profile);
+    return profile;
   });
 
   // Effet unique pour marquer le chargement comme terminé
@@ -78,7 +83,7 @@ const Home = () => {
 
   // Vérifier si l'utilisateur est connecté
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
     if (!token) {
       logger.debug('Home', 'No token found, redirecting to login');
       navigate('/login');
@@ -86,7 +91,9 @@ const Home = () => {
     }
 
     // Charger les données utilisateur depuis le localStorage
-    setUserProfile(avatarManager.getUserProfile());
+    const profile = avatarManager.getUserProfile();
+    console.log('Home: User profile loaded after token check:', profile);
+    setUserProfile(profile);
   }, [navigate]);
 
   /**
@@ -99,7 +106,13 @@ const Home = () => {
     logger.info('Home', 'User logging out');
 
     // Liste des clés à supprimer (liées à la session)
-    const sessionKeys = ['token', 'username', 'email', 'currentAvatarKey'];
+    const sessionKeys = [
+      STORAGE_KEYS.TOKEN,
+      STORAGE_KEYS.USERNAME,
+      STORAGE_KEYS.EMAIL,
+      STORAGE_KEYS.USER_ROLE,
+      STORAGE_KEYS.CURRENT_AVATAR_KEY
+    ];
 
     // Supprimer les clés de session
     sessionKeys.forEach(key => {
@@ -110,6 +123,9 @@ const Home = () => {
     if (localStorage.getItem('userAvatar')) {
       localStorage.removeItem('userAvatar');
     }
+
+    // Supprimer également le rôle utilisateur
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
 
     // Rediriger vers la page de connexion
     navigate('/login');
@@ -162,7 +178,14 @@ const Home = () => {
                   </div>
                 )}
               </div>
-              <p className="text-white font-semibold">{userProfile.username || 'Utilisateur'}</p>
+              <div className="flex items-center justify-center">
+                <p className="text-white font-semibold">{userProfile.username || 'Utilisateur'}</p>
+                {userProfile.role === 'admin' && (
+                  <span className="ml-2 bg-yellow-500 text-yellow-900 px-2 py-0.5 rounded-full text-xs flex items-center">
+                    <FaCrown className="mr-1" /> Admin
+                  </span>
+                )}
+              </div>
               <p className="text-gray-300 text-sm">{userProfile.email || 'user@example.com'}</p>
             </div>
 
@@ -176,6 +199,12 @@ const Home = () => {
               <Link to="/play" className="block text-white py-2 px-4 hover:bg-[var(--button-cyan)] rounded transition-colors">
                 Jouer
               </Link>
+              {/* Lien vers l'administration - visible uniquement pour les administrateurs */}
+              {userProfile.role === 'admin' && (
+                <Link to="/admin" className="flex items-center text-white py-2 px-4 bg-yellow-600 hover:bg-yellow-500 rounded transition-colors mt-4">
+                  <FaShieldAlt className="mr-2" /> Administration
+                </Link>
+              )}
               <button
                 onClick={handleLogout}
                 className="block w-full text-left text-white py-2 px-4 hover:bg-red-600 rounded transition-colors mt-4"
@@ -205,27 +234,42 @@ const Home = () => {
             <FaBars className="text-xl" />
           </button>
           <div className="flex items-center space-x-4">
-            <Link
-              to="/profile"
-              className="rounded-full overflow-hidden flex items-center justify-center"
-              style={{ width: '36px', height: '36px' }}
-            >
-              {userProfile.avatar ? (
-                <>
-                  <img
-                    src={userProfile.avatar}
-                    alt="Avatar"
-                    className="w-full h-full object-cover"
-                    onError={(e) => avatarManager.handleAvatarError(e)}
-                  />
-                </>
-              ) : (
-                <div className="w-full h-full bg-[var(--button-cyan)] text-white flex items-center justify-center">
-                  <FaUser />
+            <div className="relative">
+              <Link
+                to="/profile"
+                className="rounded-full overflow-hidden flex items-center justify-center"
+                style={{ width: '36px', height: '36px' }}
+              >
+                {userProfile.avatar ? (
+                  <>
+                    <img
+                      src={userProfile.avatar}
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                      onError={(e) => avatarManager.handleAvatarError(e)}
+                    />
+                  </>
+                ) : (
+                  <div className="w-full h-full bg-[var(--button-cyan)] text-white flex items-center justify-center">
+                    <FaUser />
+                  </div>
+                )}
+              </Link>
+              {userProfile.role === 'admin' && (
+                <div className="absolute -top-2 -right-2 bg-yellow-500 rounded-full w-5 h-5 flex items-center justify-center">
+                  <FaCrown className="text-yellow-900 text-xs" />
                 </div>
               )}
-            </Link>
+            </div>
             <ThemeToggle />
+            {userProfile.role === 'admin' && (
+              <Link
+                to="/admin"
+                className="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded flex items-center"
+              >
+                <FaShieldAlt className="mr-2" /> Admin
+              </Link>
+            )}
             <button
               onClick={handleLogout}
               className="px-4 py-2 bg-[var(--button-dark-blue)] text-white rounded"
